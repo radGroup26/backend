@@ -4,7 +4,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 interface DecodedToken extends JwtPayload {
     UserInfo: {
         username: string
-        roles: string[],
         userId: string
     }
 }
@@ -28,7 +27,6 @@ const verifyJWT: RequestHandler = (req, res, next) => {
     }
 
     req.user = decoded.UserInfo.username
-    req.roles = decoded.UserInfo.roles
     req.userId = decoded.UserInfo.userId
     next()
 }

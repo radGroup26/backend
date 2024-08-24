@@ -23,12 +23,6 @@ const router = express.Router();
  *     application/json:
  *      schema:
  *       $ref: '#/components/schemas/UserLoginInput'
- *   responses:
- *    200:
- *     description: Login successful
- *     content:
- *      application/json:
- *       schema:
  */
 router.route('/')
     .post(

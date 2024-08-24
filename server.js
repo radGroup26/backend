@@ -14,12 +14,12 @@ import authRouter from './routes/auth.js';
 import verifyJWT from './middleware/verifyJWT.js';
 import teamRouter from './routes/team.js';
 import swaggerDocs from './config/swagger.js';
+import inviteRouter from './routes/invite.js';
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(logger);
-// app.use(verifyJWT)
 app.use('/test', verifyJWT, (req, res) => {
     res.send(req.user);
 });
@@ -27,6 +27,7 @@ app.use('/', router);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/teams', verifyJWT, teamRouter);
+app.use('/invites', verifyJWT, inviteRouter);
 swaggerDocs(app, 3000);
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found');

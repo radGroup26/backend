@@ -49,7 +49,6 @@ const updateUser = asyncHandler(async (req, res) => {
         res.status(409).json({ message: 'Duplicate username' });
     }
     user.username = username;
-    user.roles = roles;
     user.active = active;
     if (password) {
         // Hash password 

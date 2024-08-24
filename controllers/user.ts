@@ -1,10 +1,12 @@
 import userModel from '../models/User.js'
 import orderModel from '../models/Order.js'
 import asyncHandler from 'express-async-handler'
+import Team from '../models/Team.js'
 
 
 import bcrypt from 'bcrypt'
 import { RequestHandler } from 'express'
+import mongoose from 'mongoose'
 
 
 const getAllUsers: RequestHandler = asyncHandler(async (req, res) => {
@@ -20,7 +22,7 @@ const getAllUsers: RequestHandler = asyncHandler(async (req, res) => {
 const createNewUser: RequestHandler = async (req, res) => {
     const { username, password } = req.body
 
-    if (!username || !password ) {
+    if (!username || !password) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
@@ -68,7 +70,6 @@ const updateUser: RequestHandler = asyncHandler(async (req, res) => {
     }
 
     user.username = username
-    user.roles = roles
     user.active = active
 
     if (password) {
