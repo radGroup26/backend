@@ -11,6 +11,22 @@ const teamSchema = new mongoose.Schema({
         required: true,
         ref: 'User',
     },
+    members: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        role: {
+            type: String,
+            required: true,
+            default: 'waiter',
+        },
+        accepted: {
+            type: Boolean,
+            required: true,
+            default: false,
+        }
+    }],
 })
 
 export default mongoose.model('Team', teamSchema)

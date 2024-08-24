@@ -13,6 +13,7 @@ import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
 import verifyJWT from './middleware/verifyJWT.js';
 import teamRouter from './routes/team.js';
+import swaggerDocs from './config/swagger.js';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use('/', router);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/teams', verifyJWT, teamRouter);
+swaggerDocs(app, 3000);
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found');
 });
@@ -33,7 +35,7 @@ app.use(errorHandler);
 connectDB();
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB');
-    const PORT = process.env.PORT || 3000;
+    const PORT = Number(process.env.PORT) || 3000;
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });

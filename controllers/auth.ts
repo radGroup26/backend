@@ -1,7 +1,9 @@
-import userModel from '../models/User.js'
+import userModel, {IUser} from '../models/User.js'
 import orderModel from '../models/Order.js'
 import asyncHandler from 'express-async-handler'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { Request } from 'express'
+import type { UserLoginInput } from '../schemas/userSchemas.js'
 
 
 import bcrypt from 'bcrypt'
@@ -11,7 +13,20 @@ interface DecodedToken extends JwtPayload {
     username: string
 }
 
-const login: RequestHandler = asyncHandler(async (req, res) => {
+function generateAccessToken(user: IUser) {
+    return jwt.sign(
+        {
+            "UserInfo": {
+                "username": user.username,
+                "userId": user._id
+            }
+        },
+        process.env.ACCESS_TOKEN_SECRET!,
+        { expiresIn: process.env.ACCESS_TOKEN_LIFE }
+    )
+}
+
+const login: RequestHandler = asyncHandler(async (req: Request<{}, {}, UserLoginInput>, res) => {
     const { username, password } = req.body
 
     if (!username || !password) {
@@ -30,16 +45,7 @@ const login: RequestHandler = asyncHandler(async (req, res) => {
 
     if (!match) res.status(401).json({ message: 'Unauthorized. Incorrect Password' })
 
-    const accessToken = jwt.sign(
-        {
-            "UserInfo": {
-                "username": foundUser.username,
-                "roles": foundUser.roles
-            }
-        },
-        process.env.ACCESS_TOKEN_SECRET!,
-        { expiresIn: process.env.ACCESS_TOKEN_LIFE }
-    )
+    const accessToken = generateAccessToken(foundUser)
 
     const refreshToken = jwt.sign(
         { "username": foundUser.username },
@@ -87,16 +93,7 @@ const refresh: RequestHandler = asyncHandler(async (req, res) => {
         return
     }
 
-    const accessToken = jwt.sign(
-        {
-            "UserInfo": {
-                "username": foundUser.username,
-                "roles": foundUser.roles
-            }
-        },
-        process.env.ACCESS_TOKEN_SECRET!,
-        { expiresIn: process.env.ACCESS_TOKEN_LIFE }
-    )
+    const accessToken = generateAccessToken(foundUser)
 
     res.json({ accessToken })
 })

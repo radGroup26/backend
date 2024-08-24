@@ -2,6 +2,14 @@ import userModel from '../models/User.js';
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+function generateAccessToken(user) {
+    return jwt.sign({
+        "UserInfo": {
+            "username": user.username,
+            "userId": user._id
+        }
+    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+}
 const login = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -16,12 +24,7 @@ const login = asyncHandler(async (req, res) => {
     const match = await bcrypt.compare(password, foundUser.password);
     if (!match)
         res.status(401).json({ message: 'Unauthorized. Incorrect Password' });
-    const accessToken = jwt.sign({
-        "UserInfo": {
-            "username": foundUser.username,
-            "roles": foundUser.roles
-        }
-    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+    const accessToken = generateAccessToken(foundUser);
     const refreshToken = jwt.sign({ "username": foundUser.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_LIFE });
     // Create secure cookie with refresh token 
     res.cookie('jwt', refreshToken, {
@@ -55,12 +58,7 @@ const refresh = asyncHandler(async (req, res) => {
         res.status(401).json({ message: 'Unauthorized. User not found.' });
         return;
     }
-    const accessToken = jwt.sign({
-        "UserInfo": {
-            "username": foundUser.username,
-            "roles": foundUser.roles
-        }
-    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+    const accessToken = generateAccessToken(foundUser);
     res.json({ accessToken });
 });
 const logout = asyncHandler(async (req, res) => {
