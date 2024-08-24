@@ -35,9 +35,7 @@ app.use('/test', verifyJWT, (req, res) => {
 app.use('/', router)
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
-
 app.use('/teams', verifyJWT, teamRouter)
-app.use('/invites', verifyJWT, inviteRouter)
 
 swaggerDocs(app, 3000)
 
