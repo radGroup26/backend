@@ -1,8 +1,11 @@
 import Team from '../models/Team.js'
 import User from '../models/User.js'
+import { Request } from 'express'
 
 
 import { RequestHandler } from 'express'
+import { TeamLeaveSchemaType } from '../schemas/teamSchemas.js'
+import mongoose from 'mongoose'
 
 const createTeam: RequestHandler = async (req, res) => {
     const { name } = req.body
@@ -63,19 +66,19 @@ const inviteUser: RequestHandler = async (req, res) => {
 
     // check if user is already in team
     const isMember = team.members.find(member => member.user?.toString() === (user._id as string).toString())
-    
+
 
     if (isMember) {
         return res.status(400).json({ message: `User ${user.username} is already in ${team.name}` })
     }
 
     // console.log(user._id);
-    
+
     team.members.push({ user: user._id, role })
     await team.save();
 
 
-    res.json({ Message: `User ${user.username} added to ${team.name} `})
+    res.json({ Message: `User ${user.username} added to ${team.name} ` })
 }
 
 const removeUser: RequestHandler = async (req, res) => {
@@ -99,10 +102,58 @@ const removeUser: RequestHandler = async (req, res) => {
     res.json({ message: `User removed from the team successfully` });
 };
 
+const leaveTeam: RequestHandler = async (req: Request<{}, {}, TeamLeaveSchemaType>, res) => {
+    const { teamId } = req.body;
+
+    const team = await Team.findOne({
+        _id: teamId,
+        'members.user': req.userId
+    }).exec();
+
+    if (!team) {
+        return res.status(404).json({ message: 'Team not found' });
+    }
+
+    // remove the user from the team
+    const result = await Team.findByIdAndUpdate(
+        teamId,
+        {
+            $pull: {
+                members: {
+                    user: req.userId
+                }
+            }
+        },
+        { new: true }
+    )
+
+    res.json(result);
+}
+
+const getAllTeams: RequestHandler = async (req, res) => {
+    // get teams where the user is a member, fieled id only
+    const memberTeams = await Team.find({
+        'members.user': req.userId,
+        'members.accepted': true
+    }).select('_id');
+
+
+    const ownerTeams = await Team.find({
+        owner: req.userId
+    }).select('_id');
+
+    res.json({
+        memberTeams,
+        ownerTeams
+    })
+}
+
 export {
     createTeam,
     deleteTeam,
     updateTeamName,
     inviteUser,
-    removeUser
+    removeUser,
+    leaveTeam,
+    getAllTeams
 }

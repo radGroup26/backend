@@ -2,23 +2,23 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from 'node:url'
 import { dirname } from "../lib/helper.js";
-import { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser } from '../controllers/team.js'
+import { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser, leaveTeam, getAllTeams } from '../controllers/team.js'
 import rateLimiter from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
 router.route('/')
+    .get(getAllTeams)
     .post(createTeam)
     .delete(deleteTeam)
 
-router.route('/name')
-    .put(updateTeamName)
+router.put('/name', updateTeamName)
 
-router.route('/invite')
-    .post(inviteUser)
+router.post('/invite', inviteUser)
 
-router.route('/member')
-    .delete(removeUser)
+router.delete('/member', removeUser)
+
+router.post('/leave', leaveTeam)
 
 
 export default router
