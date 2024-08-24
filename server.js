@@ -12,6 +12,7 @@ import { logEvent } from './middleware/logger.js';
 import userRouter from './routes/user.js';
 import authRouter from './routes/auth.js';
 import verifyJWT from './middleware/verifyJWT.js';
+import teamRouter from './routes/team.js';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use('/test', verifyJWT, (req, res) => {
 app.use('/', router);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/teams', verifyJWT, teamRouter);
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found');
 });

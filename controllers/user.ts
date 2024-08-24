@@ -18,9 +18,9 @@ const getAllUsers: RequestHandler = asyncHandler(async (req, res) => {
 })
 
 const createNewUser: RequestHandler = async (req, res) => {
-    const { username, password, roles } = req.body
+    const { username, password } = req.body
 
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    if (!username || !password ) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
@@ -34,7 +34,6 @@ const createNewUser: RequestHandler = async (req, res) => {
     const user = await userModel.create({
         username,
         "password": hashedPwd,
-        roles
     })
 
     if (user) {

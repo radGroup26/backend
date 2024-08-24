@@ -10,19 +10,19 @@ const login = asyncHandler(async (req, res) => {
     }
     const foundUser = await userModel.findOne({ username }).exec();
     if (!foundUser || !foundUser.active) {
-        res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({ message: 'Unauthorized. No user found' });
         return;
     }
     const match = await bcrypt.compare(password, foundUser.password);
     if (!match)
-        res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({ message: 'Unauthorized. Incorrect Password' });
     const accessToken = jwt.sign({
         "UserInfo": {
             "username": foundUser.username,
             "roles": foundUser.roles
         }
-    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ "username": foundUser.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+    const refreshToken = jwt.sign({ "username": foundUser.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_LIFE });
     // Create secure cookie with refresh token 
     res.cookie('jwt', refreshToken, {
         httpOnly: true, //accessible only by web server 
@@ -36,7 +36,7 @@ const login = asyncHandler(async (req, res) => {
 const refresh = asyncHandler(async (req, res) => {
     const cookies = req.cookies;
     if (!cookies.jwt) {
-        res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({ message: 'Unauthorized. Refresh token cookie not found.' });
         return;
     }
     const refreshToken = cookies.jwt;
@@ -46,13 +46,13 @@ const refresh = asyncHandler(async (req, res) => {
     }
     catch (err) {
         if (err) {
-            res.status(403).json({ message: 'Forbidden' });
+            res.status(403).json({ message: 'Forbidden. Invalid or expired refresh token.' });
             return;
         }
     }
     const foundUser = await userModel.findOne({ username: decoded.username }).exec();
     if (!foundUser) {
-        res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({ message: 'Unauthorized. User not found.' });
         return;
     }
     const accessToken = jwt.sign({
@@ -60,7 +60,7 @@ const refresh = asyncHandler(async (req, res) => {
             "username": foundUser.username,
             "roles": foundUser.roles
         }
-    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
     res.json({ accessToken });
 });
 const logout = asyncHandler(async (req, res) => {

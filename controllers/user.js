@@ -10,8 +10,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
     res.json(users);
 });
 const createNewUser = async (req, res) => {
-    const { username, password, roles } = req.body;
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    const { username, password } = req.body;
+    if (!username || !password) {
         return res.status(400).json({ message: 'All fields are required' });
     }
     const duplicate = await userModel.findOne({ username }).lean().exec();
@@ -22,7 +22,6 @@ const createNewUser = async (req, res) => {
     const user = await userModel.create({
         username,
         "password": hashedPwd,
-        roles
     });
     if (user) {
         res.status(201).json({ message: `New user ${username} created` });
