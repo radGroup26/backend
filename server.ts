@@ -20,7 +20,10 @@ import inviteRouter from './routes/invite.js'
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -38,9 +41,7 @@ app.use('/test', verifyJWT, (req, res) => {
 app.use('/', router)
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
-
 app.use('/teams', verifyJWT, teamRouter)
-app.use('/invites', verifyJWT, inviteRouter)
 
 swaggerDocs(app, 3000)
 

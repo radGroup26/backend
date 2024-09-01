@@ -1,5 +1,20 @@
 import Team from '../models/Team.js';
 import User from '../models/User.js';
+const getTeamMembers = async (req, res) => {
+    const { teamId } = req.body;
+    try {
+        const team = await Team.findById(teamId).populate('members');
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+        res.json({
+            members: team.members
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
 const createTeam = async (req, res) => {
     const { name } = req.body;
     const team = await Team.create({
@@ -34,6 +49,9 @@ const inviteUser = async (req, res) => {
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
+    if (user.id == req.userId) {
+        return res.status(400).json({ message: 'You cannot invite yourself' });
+    }
     const team = await Team.findOne({ _id: teamId, owner: req.userId });
     if (!team) {
         return res.status(404).json({ message: 'Team not found' });
@@ -64,4 +82,37 @@ const removeUser = async (req, res) => {
     await team.save();
     res.json({ message: `User removed from the team successfully` });
 };
-export { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser };
+const leaveTeam = async (req, res) => {
+    const { teamId } = req.body;
+    const team = await Team.findOne({
+        _id: teamId,
+        'members.user': req.userId
+    }).exec();
+    if (!team) {
+        return res.status(404).json({ message: 'Team not found' });
+    }
+    // remove the user from the team
+    const result = await Team.findByIdAndUpdate(teamId, {
+        $pull: {
+            members: {
+                user: req.userId
+            }
+        }
+    }, { new: true });
+    res.json(result);
+};
+const getAllTeams = async (req, res) => {
+    // get teams where the user is a member, fieled id only
+    const memberTeams = await Team.find({
+        'members.user': req.userId,
+        'members.accepted': true
+    }).select('name');
+    const ownerTeams = await Team.find({
+        owner: req.userId
+    }).select('name');
+    res.json({
+        memberTeams,
+        ownerTeams
+    });
+};
+export { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser, leaveTeam, getAllTeams, getTeamMembers };

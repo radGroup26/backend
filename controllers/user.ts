@@ -38,6 +38,12 @@ const createNewUser: RequestHandler = async (req, res) => {
         "password": hashedPwd,
     })
 
+    const team = await Team.create({
+        name: 'Default Restaurant',
+        owner: user.id
+    })
+
+
     if (user) {
         res.status(201).json({ message: `New user ${username} created` })
     } else {

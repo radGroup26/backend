@@ -32,7 +32,7 @@ router.route('/')
     )
 
 router.route('/refresh')
-    .get(refresh)
+    .post(refresh)
 
 router.route('/logout')
     .post(logout)
