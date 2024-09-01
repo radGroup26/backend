@@ -19,6 +19,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+//
+// app.use(cors(options));
 app.use(logger);
 app.use('/test', verifyJWT, (req, res) => {
     res.send(req.user);

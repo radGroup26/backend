@@ -7,6 +7,7 @@ import cors from 'cors'
 import { options } from './config/cors.js'
 import dotenv from 'dotenv'
 dotenv.config()
+
 import connectDB from './config/dbConn.js'
 import mongoose from 'mongoose'
 import { logEvent } from './middleware/logger.js'
@@ -23,9 +24,11 @@ app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 
+//
+// app.use(cors(options));
+
 
 app.use(logger)
-
 
 
 app.use('/test', verifyJWT, (req, res) => {
