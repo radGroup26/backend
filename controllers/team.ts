@@ -7,6 +7,25 @@ import { RequestHandler } from 'express'
 import { TeamLeaveSchemaType } from '../schemas/teamSchemas.js'
 import mongoose from 'mongoose'
 
+const getTeamMembers: RequestHandler = async (req, res) => {
+    const { teamId } = req.body;
+
+    try {
+
+        const team = await Team.findById(teamId).populate('members');
+
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+
+        res.json({
+            members: team.members
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
 const createTeam: RequestHandler = async (req, res) => {
     const { name } = req.body
 
@@ -54,9 +73,15 @@ const updateTeamName: RequestHandler = async (req, res) => {
 const inviteUser: RequestHandler = async (req, res) => {
     const { teamId, username, role } = req.body
 
+
+
     const user = await User.findOne({ username })
     if (!user) {
         return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (user.id == req.userId) {
+        return res.status(400).json({ message: 'You cannot invite yourself' })
     }
 
     const team = await Team.findOne({ _id: teamId, owner: req.userId })
@@ -135,12 +160,12 @@ const getAllTeams: RequestHandler = async (req, res) => {
     const memberTeams = await Team.find({
         'members.user': req.userId,
         'members.accepted': true
-    }).select('_id');
+    }).select('name');
 
 
     const ownerTeams = await Team.find({
         owner: req.userId
-    }).select('_id');
+    }).select('name');
 
     res.json({
         memberTeams,
@@ -155,5 +180,6 @@ export {
     inviteUser,
     removeUser,
     leaveTeam,
-    getAllTeams
+    getAllTeams,
+    getTeamMembers
 }

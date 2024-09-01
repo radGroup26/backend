@@ -1,6 +1,7 @@
 import userModel from '../models/User.js';
 import orderModel from '../models/Order.js';
 import asyncHandler from 'express-async-handler';
+import Team from '../models/Team.js';
 import bcrypt from 'bcrypt';
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await userModel.find().select('-password').lean();
@@ -22,6 +23,10 @@ const createNewUser = async (req, res) => {
     const user = await userModel.create({
         username,
         "password": hashedPwd,
+    });
+    const team = await Team.create({
+        name: 'Default Restaurant',
+        owner: user.id
     });
     if (user) {
         res.status(201).json({ message: `New user ${username} created` });

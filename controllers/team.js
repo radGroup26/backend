@@ -1,5 +1,20 @@
 import Team from '../models/Team.js';
 import User from '../models/User.js';
+const getTeamMembers = async (req, res) => {
+    const { teamId } = req.body;
+    try {
+        const team = await Team.findById(teamId).populate('members');
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+        res.json({
+            members: team.members
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
 const createTeam = async (req, res) => {
     const { name } = req.body;
     const team = await Team.create({
@@ -33,6 +48,9 @@ const inviteUser = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.id == req.userId) {
+        return res.status(400).json({ message: 'You cannot invite yourself' });
     }
     const team = await Team.findOne({ _id: teamId, owner: req.userId });
     if (!team) {
@@ -88,13 +106,13 @@ const getAllTeams = async (req, res) => {
     const memberTeams = await Team.find({
         'members.user': req.userId,
         'members.accepted': true
-    }).select('_id');
+    }).select('name');
     const ownerTeams = await Team.find({
         owner: req.userId
-    }).select('_id');
+    }).select('name');
     res.json({
         memberTeams,
         ownerTeams
     });
 };
-export { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser, leaveTeam, getAllTeams };
+export { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser, leaveTeam, getAllTeams, getTeamMembers };

@@ -15,7 +15,10 @@ import verifyJWT from './middleware/verifyJWT.js';
 import teamRouter from './routes/team.js';
 import swaggerDocs from './config/swagger.js';
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(logger);

@@ -21,7 +21,7 @@ const router = express.Router();
 router.route('/')
     .post(validateRequestBody(userLoginSchema), rateLimiter, login);
 router.route('/refresh')
-    .get(refresh);
+    .post(refresh);
 router.route('/logout')
     .post(logout);
 export default router;

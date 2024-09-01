@@ -1,5 +1,5 @@
 import express from "express";
-import { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser, leaveTeam, getAllTeams } from '../controllers/team.js';
+import { createTeam, deleteTeam, updateTeamName, inviteUser, removeUser, leaveTeam, getAllTeams, getTeamMembers } from '../controllers/team.js';
 import inviteRouter from './invite.js';
 const router = express.Router();
 router.route('/')
@@ -11,4 +11,5 @@ router.post('/invite', inviteUser);
 router.delete('/member', removeUser);
 router.post('/leave', leaveTeam);
 router.use('/invites', inviteRouter);
+router.post('/members', getTeamMembers);
 export default router;
