@@ -11,14 +11,18 @@ const getAllInvites: RequestHandler = async (req, res) => {
     }).exec();
 
 
-    if (!teams.length) {
-        return res.status(400).json({ message: 'No invites found' })
-    }
+    // if (!teams.length) {
+    //     return res.status(400).json({ message: 'No invites found' })
+    // }
 
-    const temsIds = teams.map(team => team._id)
+    const invitedTeams = teams.map(team => ({
+        name: team.name,
+        id: team._id,
+        owner: team.owner
+    }))
 
     res.json({
-        'teams': temsIds
+        'teams': invitedTeams
     })
 }
 

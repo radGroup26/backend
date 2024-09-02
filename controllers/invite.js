@@ -5,12 +5,16 @@ const getAllInvites = async (req, res) => {
         'members.user': req.userId,
         'members.accepted': false
     }).exec();
-    if (!teams.length) {
-        return res.status(400).json({ message: 'No invites found' });
-    }
-    const temsIds = teams.map(team => team._id);
+    // if (!teams.length) {
+    //     return res.status(400).json({ message: 'No invites found' })
+    // }
+    const invitedTeams = teams.map(team => ({
+        name: team.name,
+        id: team._id,
+        owner: team.owner
+    }));
     res.json({
-        'teams': temsIds
+        'teams': invitedTeams
     });
 };
 const acceptInvite = async (req, res) => {
