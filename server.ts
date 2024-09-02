@@ -15,6 +15,7 @@ import userRouter from './routes/user.js'
 import authRouter from './routes/auth.js'
 import verifyJWT from './middleware/verifyJWT.js'
 import teamRouter from './routes/team.js'
+import tableRouter from './routes/table.js'
 import swaggerDocs from './config/swagger.js'
 import inviteRouter from './routes/invite.js'
 
@@ -42,9 +43,9 @@ app.use('/', router)
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
 app.use('/teams', verifyJWT, teamRouter)
+app.use('/restaurants', verifyJWT, tableRouter)
 
 swaggerDocs(app, 3000)
-
 
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found')
