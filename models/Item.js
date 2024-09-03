@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const menuSchema = new mongoose.Schema({
+const itemSchema = new mongoose.Schema({
     _id: {
         type: mongoose.Schema.Types.ObjectId,
         default: function () {
@@ -28,4 +28,4 @@ const menuSchema = new mongoose.Schema({
         required: true,
     }
 });
-export default mongoose.model('Menu', menuSchema);
+export default mongoose.model('Item', itemSchema);
