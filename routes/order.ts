@@ -1,5 +1,12 @@
 import express from "express";
-import {getOrderByTableId, createOrder, deleteOrder, finishOrder, declineOrder} from "../controllers/order.js";
+import {
+    getOrderByTableId,
+    createOrder,
+    deleteOrder,
+    finishOrder,
+    declineOrder,
+    completeOrder, startOrder, cancelOrder
+} from "../controllers/order.js";
 
 const router = express.Router();
 
@@ -9,9 +16,14 @@ router.post('/create', createOrder);
 
 router.post('/delete', deleteOrder)
 
+router.post('/cancel', cancelOrder)
+
 router.post('/finish', finishOrder)
 
 router.post('/decline', declineOrder)
 
+router.post('/start', startOrder)
+
+router.post('/complete', completeOrder)
 
 export default router
