@@ -1,5 +1,6 @@
 import Item from '../models/Item.js';
 import { RequestHandler } from 'express'
+import Order from "../models/Order";
 
 const getItemByRestaurantId: RequestHandler = async (req, res) => {
     const { restaurantId } = req.params;
@@ -17,6 +18,28 @@ const getItemByRestaurantId: RequestHandler = async (req, res) => {
     }
 };
 
+const createItem: RequestHandler = async (req, res) => {
+    const { restaurantId ,name, description, option, price } = req.body;
+
+    try {
+        const item = await Item.create({
+            restaurantId,
+            name,
+            description,
+            option,
+            price
+        });
+
+        res.json({
+            item
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating item', error });
+    }
+
+};
+
 export {
     getItemByRestaurantId,
+    createItem
 }

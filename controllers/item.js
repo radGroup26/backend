@@ -12,4 +12,22 @@ const getItemByRestaurantId = async (req, res) => {
         res.status(500).json({ message: 'Error fetching menu', error });
     }
 };
-export { getItemByRestaurantId, };
+const createItem = async (req, res) => {
+    const { restaurantId, name, description, option, price } = req.body;
+    try {
+        const item = await Item.create({
+            restaurantId,
+            name,
+            description,
+            option,
+            price
+        });
+        res.json({
+            item
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error creating item', error });
+    }
+};
+export { getItemByRestaurantId, createItem };
