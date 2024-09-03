@@ -1,0 +1,108 @@
+import Order from '../models/Order.js';
+import { RequestHandler } from 'express'
+
+const getOrderByTableId: RequestHandler = async (req, res) => {
+    const { tableId } = req.params;
+    try {
+        let order = await Order.find({ status: { $nin: ['Finished', 'Declined'] } });
+
+        if (!order) {
+            return res.status(404).json({ message: 'Orders not found' });
+        }
+
+        // Filter orders by required tableId
+        order = order.filter(order => order.tableId.toString() === tableId);
+
+        res.status(200).json(order);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching order', error });
+    }
+};
+
+const createOrder: RequestHandler = async (req, res) => {
+    const { restaurantId ,tableId, name, quantity, status } = req.body;
+
+    try {
+        const order = await Order.create({
+            restaurantId,
+            tableId,
+            name,
+            quantity,
+            status
+        });
+
+        res.json({
+            order
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating order', error });
+    }
+
+};
+
+const deleteOrder: RequestHandler = async (req, res) => {
+    const { orderId } = req.body;
+
+    try {
+        const order = await Order.findOneAndDelete({ _id: orderId });
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.json({
+            order
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting order', error });
+    }
+};
+
+const finishOrder: RequestHandler = async (req, res) => {
+    const { orderId } = req.body;
+
+    try {
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { status: 'Finished' },
+        );
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.json({ order });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error finishing order', error });
+    }
+}
+
+const declineOrder: RequestHandler = async (req, res) => {
+    const { orderId } = req.body;
+
+    try {
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { status: 'Declined' },
+        );
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.json({ order });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error declining order', error });
+    }
+}
+
+export {
+    getOrderByTableId,
+    createOrder,
+    deleteOrder,
+    finishOrder,
+    declineOrder
+}

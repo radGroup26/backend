@@ -39,7 +39,7 @@ const acceptInvite: RequestHandler = async (req: Request<{}, {}, inviteAcceptSch
         return res.status(400).json({ message: 'Invite not found' })
     }
 
-    //uppdate the team
+    //update the team
     team.members.map(member => {
         if (member.user && member.user.toString() === req.userId) {
             member.accepted = true;

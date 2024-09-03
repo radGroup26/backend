@@ -7,6 +7,7 @@ import cors from 'cors'
 import { options } from './config/cors.js'
 import dotenv from 'dotenv'
 dotenv.config()
+
 import connectDB from './config/dbConn.js'
 import mongoose from 'mongoose'
 import { logEvent } from './middleware/logger.js'
@@ -14,6 +15,9 @@ import userRouter from './routes/user.js'
 import authRouter from './routes/auth.js'
 import verifyJWT from './middleware/verifyJWT.js'
 import teamRouter from './routes/team.js'
+import tableRouter from './routes/table.js'
+import itemRouter from './routes/item.js'
+import orderRouter from './routes/order.js'
 import swaggerDocs from './config/swagger.js'
 import inviteRouter from './routes/invite.js'
 
@@ -30,7 +34,6 @@ app.use(cookieParser())
 app.use(logger)
 
 
-
 app.use('/test', verifyJWT, (req, res) => {
     res.send(req.user)
 })
@@ -39,9 +42,11 @@ app.use('/', router)
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
 app.use('/teams', verifyJWT, teamRouter)
+app.use('/restaurants', verifyJWT, tableRouter)
+app.use('/items', verifyJWT, itemRouter)
+app.use('/orders', verifyJWT, orderRouter)
 
 swaggerDocs(app, 3000)
-
 
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found')
