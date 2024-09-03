@@ -173,6 +173,34 @@ const getAllTeams: RequestHandler = async (req, res) => {
     })
 }
 
+const getTeamRole: RequestHandler = async (req, res) => {
+    const { teamId } = req.body;
+
+    try {
+        const team = await Team.findById(teamId).populate('members');
+
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+
+        if (team.owner.toString() === req.userId) {
+            return res.json({ role: 'owner' });
+        }
+
+        const member = team.members.find(member => member.user?.toString() === req?.userId);
+
+        if (!member) {
+            return res.status(404).json({ message: 'User not found in team' });
+        }
+
+        res.json({
+            role: member.role
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
 export {
     createTeam,
     deleteTeam,
@@ -181,5 +209,6 @@ export {
     removeUser,
     leaveTeam,
     getAllTeams,
-    getTeamMembers
+    getTeamMembers,
+    getTeamRole
 }
