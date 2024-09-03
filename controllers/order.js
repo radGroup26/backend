@@ -12,4 +12,17 @@ const getOrderByTableId = async (req, res) => {
         res.status(500).json({ message: 'Error fetching order', error });
     }
 };
-export { getOrderByTableId, };
+const createOrder = async (req, res) => {
+    const { restaurantId, tableId, name, quantity, status } = req.body;
+    const order = await Order.create({
+        restaurantId,
+        tableId,
+        name,
+        quantity,
+        status
+    });
+    res.json({
+        order
+    });
+};
+export { getOrderByTableId, createOrder };

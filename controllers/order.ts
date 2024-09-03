@@ -17,6 +17,23 @@ const getOrderByTableId: RequestHandler = async (req, res) => {
     }
 };
 
+const createOrder: RequestHandler = async (req, res) => {
+    const { restaurantId ,tableId, name, quantity, status } = req.body;
+
+    const order = await Order.create({
+        restaurantId,
+        tableId,
+        name,
+        quantity,
+        status
+    });
+
+    res.json({
+        order
+    });
+};
+
 export {
     getOrderByTableId,
+    createOrder
 }
