@@ -14,6 +14,7 @@ import authRouter from './routes/auth.js';
 import verifyJWT from './middleware/verifyJWT.js';
 import teamRouter from './routes/team.js';
 import tableRouter from './routes/table.js';
+import menuRouter from './routes/menu.js';
 import swaggerDocs from './config/swagger.js';
 const app = express();
 app.use(cors({
@@ -22,8 +23,6 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-//
-// app.use(cors(options));
 app.use(logger);
 app.use('/test', verifyJWT, (req, res) => {
     res.send(req.user);
@@ -33,6 +32,7 @@ app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/teams', verifyJWT, teamRouter);
 app.use('/restaurants', verifyJWT, tableRouter);
+app.use('/menus', verifyJWT, menuRouter);
 swaggerDocs(app, 3000);
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found');

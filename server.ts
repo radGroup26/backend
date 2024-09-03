@@ -16,6 +16,7 @@ import authRouter from './routes/auth.js'
 import verifyJWT from './middleware/verifyJWT.js'
 import teamRouter from './routes/team.js'
 import tableRouter from './routes/table.js'
+import menuRouter from './routes/menu.js'
 import swaggerDocs from './config/swagger.js'
 import inviteRouter from './routes/invite.js'
 
@@ -27,9 +28,6 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(cookieParser())
-
-//
-// app.use(cors(options));
 
 
 app.use(logger)
@@ -44,6 +42,7 @@ app.use('/users', userRouter)
 app.use('/auth', authRouter)
 app.use('/teams', verifyJWT, teamRouter)
 app.use('/restaurants', verifyJWT, tableRouter)
+app.use('/menus', verifyJWT, menuRouter)
 
 swaggerDocs(app, 3000)
 
