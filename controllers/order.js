@@ -47,6 +47,21 @@ const deleteOrder = async (req, res) => {
         res.status(500).json({ message: 'Error deleting order', error });
     }
 };
+const cancelOrder = async (req, res) => {
+    const { orderId } = req.body;
+    try {
+        const order = await Order.findByIdAndUpdate(orderId, { status: 'Cancelled' });
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.json({
+            order
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error cancelling order', error });
+    }
+};
 const finishOrder = async (req, res) => {
     const { orderId } = req.body;
     try {
@@ -73,4 +88,30 @@ const declineOrder = async (req, res) => {
         res.status(500).json({ message: 'Error declining order', error });
     }
 };
-export { getOrderByTableId, createOrder, deleteOrder, finishOrder, declineOrder };
+const startOrder = async (req, res) => {
+    const { orderId } = req.body;
+    try {
+        const order = await Order.findByIdAndUpdate(orderId, { status: 'InProgress' });
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.json({ order });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error starting order', error });
+    }
+};
+const completeOrder = async (req, res) => {
+    const { orderId } = req.body;
+    try {
+        const order = await Order.findByIdAndUpdate(orderId, { status: 'Completed' });
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.json({ order });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error completing order', error });
+    }
+};
+export { getOrderByTableId, createOrder, deleteOrder, cancelOrder, finishOrder, declineOrder, startOrder, completeOrder, };
