@@ -15,6 +15,7 @@ import verifyJWT from './middleware/verifyJWT.js';
 import teamRouter from './routes/team.js';
 import tableRouter from './routes/table.js';
 import itemRouter from './routes/item.js';
+import profileRouter from './routes/profile.js';
 import orderRouter from './routes/order.js';
 import swaggerDocs from './config/swagger.js';
 const app = express();
@@ -35,6 +36,7 @@ app.use('/teams', verifyJWT, teamRouter);
 app.use('/restaurants', verifyJWT, tableRouter);
 app.use('/items', verifyJWT, itemRouter);
 app.use('/orders', verifyJWT, orderRouter);
+app.use('/profiles', verifyJWT, profileRouter);
 swaggerDocs(app, 3000);
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found');
