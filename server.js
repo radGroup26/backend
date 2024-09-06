@@ -1,41 +1,15 @@
-import express from 'express';
-import router from './routes/root.js';
-import { logger } from './middleware/logger.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
+import { errorHandler } from './middleware/errorHandler.js';
 dotenv.config();
-import connectDB from './config/dbConn.js';
 import mongoose from 'mongoose';
+import { setupMiddlewares } from './bootstrap/middleware.js';
+import { setupRoutes } from './bootstrap/routes.js';
+import connectDB from './bootstrap/db.js';
 import { logEvent } from './middleware/logger.js';
-import userRouter from './routes/user.js';
-import authRouter from './routes/auth.js';
-import verifyJWT from './middleware/verifyJWT.js';
-import teamRouter from './routes/team.js';
-import tableRouter from './routes/table.js';
-import itemRouter from './routes/item.js';
-import orderRouter from './routes/order.js';
-import swaggerDocs from './config/swagger.js';
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
-app.use(express.json());
-app.use(cookieParser());
-app.use(logger);
-app.use('/test', verifyJWT, (req, res) => {
-    res.send(req.user);
-});
-app.use('/', router);
-app.use('/users', userRouter);
-app.use('/auth', authRouter);
-app.use('/teams', verifyJWT, teamRouter);
-app.use('/restaurants', verifyJWT, tableRouter);
-app.use('/items', verifyJWT, itemRouter);
-app.use('/orders', verifyJWT, orderRouter);
-swaggerDocs(app, 3000);
+setupMiddlewares(app);
+setupRoutes(app); // routes are here now
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found');
 });
