@@ -18,7 +18,7 @@ export const setupRoutes = (app: Express) => {
     app.use('/users', userRouter);
     app.use('/auth', authRouter);
     app.use('/teams', verifyJWT, teamRouter);
-    app.use('/restaurants', verifyJWT, tableRouter);
+    app.use('/tables', verifyJWT, tableRouter);
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
 };
