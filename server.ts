@@ -10,9 +10,10 @@ import connectDB from './bootstrap/db.js'
 import { logEvent } from './middleware/logger.js'
 
 const app = express()
+const PORT = Number(process.env.PORT) || 3000
 
 setupMiddlewares(app)
-setupRoutes(app) // routes are here now
+setupRoutes(app) // routes are in the bootstrap/routes.ts
 
 app.all('*', (req, res) => {
     res.status(404).send('404 Not Found')
@@ -23,7 +24,6 @@ app.use(errorHandler)
 connectDB()
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB');
-    const PORT = Number(process.env.PORT) || 3000
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     })
