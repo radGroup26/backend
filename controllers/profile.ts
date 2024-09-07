@@ -1,11 +1,11 @@
-import profileModel from '../models/Profile.js'
+import Profile from '../models/Profile.js'
 import asyncHandler from 'express-async-handler'
 
 import { RequestHandler } from 'express'
 
 const getProfile: RequestHandler = asyncHandler(async (req, res) => {
     const { userID } = req.params;
-    const profile = await profileModel.findOne({ userID });
+    const profile = await Profile.findOne({ userId: userID });
 
     if (!profile) {
         res.status(400).json({ message: 'Profile not found' })
@@ -21,7 +21,7 @@ const createNewProfile: RequestHandler = async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
-    const profile = await profileModel.create({
+    const profile = await Profile.create({
         first_name,
         last_name,
         role,
@@ -43,7 +43,7 @@ const updateProfile: RequestHandler = asyncHandler(async (req, res) => {
         res.status(400).json({ message: 'All fields are required' })
     }
 
-    const profile = await profileModel.findByIdAndUpdate(userId, {
+    const profile = await Profile.findByIdAndUpdate(userId, {
         first_name,
         last_name,
         role,
@@ -65,7 +65,7 @@ const deleteProfile: RequestHandler = asyncHandler(async (req, res) => {
         res.status(400).json({ message: 'User ID is required' })
     }
 
-    const profile = await profileModel.findByIdAndDelete(userId)
+    const profile = await Profile.findByIdAndDelete(userId)
 
     if (profile) {
         res.status(201).json({ message: `Profile deleted` })
