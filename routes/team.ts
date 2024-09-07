@@ -18,7 +18,7 @@ router.put('/name', updateTeamName)
 
 router.post('/invite', inviteUser)
 
-router.delete('/member', removeUser)
+router.post('/memberRemove', removeUser)
 
 router.post('/leave', leaveTeam)
 
