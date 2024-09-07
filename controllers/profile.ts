@@ -5,13 +5,13 @@ import { RequestHandler } from 'express'
 
 const getProfile: RequestHandler = asyncHandler(async (req, res) => {
     const { userID } = req.params;
-    const profile = await profileModel.findOne({where : {userId : userID}}).lean();
+    const profile = await profileModel.findOne({ userID });
 
     if (!profile) {
         res.status(400).json({ message: 'Profile not found' })
     }
 
-    res.json(profile)
+    res.status(200).json(profile)
 })
 
 const createNewProfile: RequestHandler = async (req, res) => {

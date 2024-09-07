@@ -2,7 +2,7 @@ import profileModel from '../models/Profile.js';
 import asyncHandler from 'express-async-handler';
 const getProfile = asyncHandler(async (req, res) => {
     const { userID } = req.params;
-    const profile = await profileModel.findOne({where : {userId : userID}}).lean();
+    const profile = await profileModel.findOne({ userID });
     if (!profile) {
         res.status(400).json({ message: 'Profile not found' });
     }

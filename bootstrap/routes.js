@@ -18,5 +18,5 @@ export const setupRoutes = (app) => {
     app.use('/restaurants', verifyJWT, tableRouter);
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
-    app.use('/profile', verifyJWT, profileRouter);
+    app.use('/profiles', verifyJWT, profileRouter);
 };
