@@ -32,5 +32,5 @@ const ProfileSchema = new Schema({
 })
 
 
-export default model<IProfile>('User', ProfileSchema)
+export default model<IProfile>('Profile', ProfileSchema)
 export type { IProfile }

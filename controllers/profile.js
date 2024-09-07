@@ -1,11 +1,12 @@
 import profileModel from '../models/Profile.js';
 import asyncHandler from 'express-async-handler';
 const getProfile = asyncHandler(async (req, res) => {
-    const profile = await profileModel.find().select('first_name, last_name, role, email').lean();
-    if (!profile?.length) {
+    const { userID } = req.params;
+    const profile = await profileModel.findOne({where : {userId : userID}}).lean();
+    if (!profile) {
         res.status(400).json({ message: 'Profile not found' });
     }
-    res.json(profile);
+    res.status(200).json(profile);
 });
 const createNewProfile = async (req, res) => {
     const { first_name, last_name, role, email, userId } = req.body;
