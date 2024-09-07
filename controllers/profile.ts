@@ -3,16 +3,32 @@ import asyncHandler from 'express-async-handler'
 
 import { RequestHandler } from 'express'
 
-const getProfile: RequestHandler = asyncHandler(async (req, res) => {
+/* const getProfile: RequestHandler = asyncHandler(async (req, res) => {
     const { userID } = req.params;
+    console.log("Recieved user Id", userID);
+
     const profile = await Profile.findOne({ userId: userID });
 
     if (!profile) {
-        res.status(400).json({ message: 'Profile not found' })
+        res.status(404).json({ message: 'Profile not found' })
     }
 
     res.status(200).json(profile)
-})
+}) */
+const getProfile: RequestHandler = async (req, res) => {
+    const { userId } = req.params;
+    console.log("Recieved user Id", userId);
+    try {
+        const profile = await Profile.find({ userId:userId });
+        if (!profile) {
+            return res.status(404).json({ message: 'Menu not found' });
+        }
+        res.status(200).json(profile);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error fetching menu', error });
+    }
+};
 
 const createNewProfile: RequestHandler = async (req, res) => {
     const { first_name, last_name, role, email, userId } = req.body
