@@ -7,6 +7,7 @@ import tableRouter from '../routes/table.js';
 import itemRouter from '../routes/item.js';
 import orderRouter from '../routes/order.js';
 import inviteRouter from '../routes/invite.js';
+import profileRouter from '../routes/profile.js';
 import type { Express } from 'express';
 
 export const setupRoutes = (app: Express) => {
@@ -21,4 +22,5 @@ export const setupRoutes = (app: Express) => {
     app.use('/restaurants', verifyJWT, tableRouter);
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
+    app.use('/profile', verifyJWT, profileRouter);
 };
