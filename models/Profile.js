@@ -21,4 +21,4 @@ const ProfileSchema = new Schema({
         ref: 'User',
     },
 });
-export default model('Profile', ProfileSchema);
+export default model('User', ProfileSchema);
