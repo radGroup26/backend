@@ -1,7 +1,7 @@
-const Notification = require("../models/Notification");
+import Notification from "../models/Notification.js";
 
 // Get all notifications
-exports.getAllNotifications = async (req, res) => {
+const getAllNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find().sort({ createdAt: -1 });
     res.json(notifications);
@@ -11,7 +11,7 @@ exports.getAllNotifications = async (req, res) => {
 };
 
 // Add new notification
-exports.addNotification = async (req, res) => {
+const addNotification = async (req, res) => {
   const { title, message, createdAt } = req.body;
   const notification = new Notification({
     title,
@@ -28,7 +28,7 @@ exports.addNotification = async (req, res) => {
 };
 
 // Update a notification
-exports.updateNotification = async (req, res) => {
+const updateNotification = async (req, res) => {
   try {
     const { title, message, createdAt } = req.body;
     const notification = await Notification.findById(req.params.id);
@@ -48,7 +48,7 @@ exports.updateNotification = async (req, res) => {
 };
 
 // DELETE notification by id
-exports.deleteNotification = async (req, res) => {
+const deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findByIdAndDelete(req.params.id);
     if (!notification) {
@@ -59,4 +59,10 @@ exports.deleteNotification = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error", error });
   }
+};
+export {
+  getAllNotifications,
+  addNotification,
+  updateNotification,
+  deleteNotification,
 };
