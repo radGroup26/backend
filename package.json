@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "cp ./.env ./build/ && nodemon ./build/server.js"
+    "dev": "nodemon --exec node server.js"
   },
   "author": "",
   "license": "ISC",
