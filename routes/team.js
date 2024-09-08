@@ -8,7 +8,7 @@ router.route('/')
     .delete(deleteTeam);
 router.put('/name', updateTeamName);
 router.post('/invite', inviteUser);
-router.delete('/member', removeUser);
+router.post('/memberRemove', removeUser);
 router.post('/leave', leaveTeam);
 router.use('/invites', inviteRouter);
 router.post('/members', getTeamMembers);

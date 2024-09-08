@@ -7,8 +7,21 @@ const getTeamMembers = async (req, res) => {
         if (!team) {
             return res.status(404).json({ message: 'Team not found' });
         }
+        const memberUsernames = await User.find({
+            _id: {
+                $in: team.members.map(member => member.user)
+            }
+        }).select('username');
+        const members = team.members.map(member => {
+            const username = memberUsernames.find(username => (username._id.toString() === member.user?.toString()));
+            return {
+                ...member.toObject(),
+                username: username?.username
+            };
+        });
+        console.log(members);
         res.json({
-            members: team.members
+            members
         });
     }
     catch (error) {
@@ -44,30 +57,36 @@ const updateTeamName = async (req, res) => {
     res.json({ team });
 };
 const inviteUser = async (req, res) => {
-    const { teamId, username, role } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+    try {
+        const { teamId, username, role } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (user.id == req.userId) {
+            return res.status(400).json({ message: 'You cannot invite yourself' });
+        }
+        const team = await Team.findOne({ _id: teamId, owner: req.userId });
+        if (!team) {
+            return res.status(404).json({ message: 'Team not found' });
+        }
+        // check if user is already in team
+        const isMember = team.members.find(member => member.user?.toString() === user._id.toString());
+        if (isMember) {
+            return res.status(400).json({ message: `User ${user.username} is already in ${team.name}` });
+        }
+        // console.log(user._id);
+        team.members.push({ user: user._id, role });
+        await team.save();
+        res.json({ Message: `User ${user.username} added to ${team.name} ` });
     }
-    if (user.id == req.userId) {
-        return res.status(400).json({ message: 'You cannot invite yourself' });
+    catch (error) {
+        res.status(500).json({ message: 'Server error', error });
     }
-    const team = await Team.findOne({ _id: teamId, owner: req.userId });
-    if (!team) {
-        return res.status(404).json({ message: 'Team not found' });
-    }
-    // check if user is already in team
-    const isMember = team.members.find(member => member.user?.toString() === user._id.toString());
-    if (isMember) {
-        return res.status(400).json({ message: `User ${user.username} is already in ${team.name}` });
-    }
-    // console.log(user._id);
-    team.members.push({ user: user._id, role });
-    await team.save();
-    res.json({ Message: `User ${user.username} added to ${team.name} ` });
 };
 const removeUser = async (req, res) => {
     const { teamId, userId } = req.body;
+    console.log(teamId, userId);
     const team = await Team.findOne({ _id: teamId, owner: req.userId });
     if (!team) {
         return res.status(404).json({ message: 'Team not found' });
