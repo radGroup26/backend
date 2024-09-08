@@ -10,6 +10,10 @@ import inviteRouter from '../routes/invite.js';
 import profileRouter from '../routes/profile.js';
 import type { Express } from 'express';
 
+// @ts-ignore - it's not a ts file.
+import notificationRouter from '../routes/notification.js';
+
+
 export const setupRoutes = (app: Express) => {
     app.use('/test', verifyJWT, (req, res) => {
         res.send(req.user);
@@ -23,4 +27,5 @@ export const setupRoutes = (app: Express) => {
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
     app.use('/profiles', verifyJWT, profileRouter);
+    app.use('/notifications', verifyJWT, notificationRouter);
 };

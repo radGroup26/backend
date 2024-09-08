@@ -7,6 +7,8 @@ import tableRouter from '../routes/table.js';
 import itemRouter from '../routes/item.js';
 import orderRouter from '../routes/order.js';
 import profileRouter from '../routes/profile.js';
+// @ts-ignore - it's not a ts file.
+import notificationRouter from '../routes/notification.js';
 export const setupRoutes = (app) => {
     app.use('/test', verifyJWT, (req, res) => {
         res.send(req.user);
@@ -19,4 +21,5 @@ export const setupRoutes = (app) => {
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
     app.use('/profiles', verifyJWT, profileRouter);
+    app.use('/notifications', verifyJWT, notificationRouter);
 };
