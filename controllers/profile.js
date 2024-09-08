@@ -14,25 +14,20 @@ const getProfile = async (req, res) => {
 };
 const createNewProfile = async (req, res) => {
     const { first_name, last_name, role, email, userId } = req.body;
-    if (userId != null) {
-        try {
-            const profile = await Profile.create({
-                first_name,
-                last_name,
-                email,
-                role,
-                userId,
-            });
-            res.json({
-                profile,
-            });
-        }
-        catch (error) {
-            res.status(500).json({ message: "Error creating profile", error });
-        }
+    try {
+        const profile = await Profile.create({
+            first_name,
+            last_name,
+            email,
+            role,
+            userId,
+        });
+        res.json({
+            profile,
+        });
     }
-    else {
-        console.log("User ID exists");
+    catch (error) {
+        res.status(500).json({ message: "Error creating profile", error });
     }
 };
 const updateProfile = async (req, res) => {
