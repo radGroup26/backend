@@ -1,5 +1,4 @@
-import mongoose, { Schema, Document, model } from 'mongoose'
-
+import mongoose, { Schema, model } from 'mongoose';
 const ProfileSchema = new Schema({
     first_name: {
         type: String,
@@ -21,7 +20,5 @@ const ProfileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-})
-
-
-export default model<IProfile>('Profile', ProfileSchema)
+});
+export default model('Profile', ProfileSchema);

@@ -19,5 +19,4 @@ export const setupRoutes = (app) => {
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
     app.use('/profiles', verifyJWT, profileRouter);
-    
 };
