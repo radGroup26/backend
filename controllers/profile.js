@@ -32,16 +32,10 @@ const createNewProfile = async (req, res) => {
     }
 };
 const updateProfile = async (req, res) => {
-    const { first_name, last_name, role, email, userId } = req.body;
+    const { _id, first_name, last_name, role, email, userId } = req.body;
+    console.log(req.body);
     try {
-        const profile = await Profile.findOneAndReplace(userId, {
-            $set: {
-                first_name,
-                last_name,
-                email,
-                role,
-            },
-        });
+        const profile = await Profile.findByIdAndUpdate(userId, { _id, first_name, last_name, email, role, userId });
         if (!profile) {
             return res.status(400).json({ message: "Profile not found" });
         }
@@ -54,7 +48,7 @@ const updateProfile = async (req, res) => {
 const deleteProfile = async (req, res) => {
     const { userId } = req.body;
     try {
-        const profile = await Profile.findOneAndDelete(userId);
+        const profile = await Profile.deleteOne(userId);
         if (!profile) {
             return res.status(404).json({ message: "Profile not found" });
         }
