@@ -6,8 +6,11 @@ import teamRouter from '../routes/team.js';
 import tableRouter from '../routes/table.js';
 import itemRouter from '../routes/item.js';
 import orderRouter from '../routes/order.js';
-import inviteRouter from '../routes/invite.js';
 import type { Express } from 'express';
+
+// @ts-ignore - it's not a ts file.
+import notificationRouter from '../routes/notification.js';
+
 
 export const setupRoutes = (app: Express) => {
     app.use('/test', verifyJWT, (req, res) => {
@@ -21,4 +24,5 @@ export const setupRoutes = (app: Express) => {
     app.use('/restaurants', verifyJWT, tableRouter);
     app.use('/items', verifyJWT, itemRouter);
     app.use('/orders', verifyJWT, orderRouter);
+    app.use('/notifications', verifyJWT, notificationRouter);
 };
