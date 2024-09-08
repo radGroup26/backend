@@ -1,15 +1,6 @@
-import mongoose, { Schema, Document, model } from 'mongoose'
+import mongoose from 'mongoose'
 
-interface IProfile extends Document {
-    first_name: string
-    last_name: string
-    role: string
-    email: string
-    userId: mongoose.Schema.Types.ObjectId
-    ProfileStatus: boolean
-}
-
-const ProfileSchema = new Schema({
+const ProfileSchema = new mongoose.Schema({
     first_name: {
         type: String,
         required: true,
@@ -30,12 +21,7 @@ const ProfileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    ProfileStatus : {
-        type : Boolean,
-        default : false
-    }
 })
 
 
-export default model<IProfile>('Profile', ProfileSchema)
-export type { IProfile }
+export default mongoose.model('Profile', ProfileSchema)

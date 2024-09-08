@@ -5,7 +5,7 @@ import { RequestHandler } from "express";
 const getProfile: RequestHandler = async (req, res) => {
   const { userId } = req.params;
   try {
-    const profile = await Profile.find({ userId: userId });
+    const profile = await Profile.findOne({ userId: userId });
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
@@ -17,6 +17,7 @@ const getProfile: RequestHandler = async (req, res) => {
 
 const createNewProfile: RequestHandler = async (req, res) => {
   const { first_name, last_name, role, email, userId } = req.body;
+  console.log(req.body);
     try {
       const profile = await Profile.create({
         first_name,
@@ -27,7 +28,7 @@ const createNewProfile: RequestHandler = async (req, res) => {
       });
 
       res.json({
-        profile,ProfileStatus : true
+        profile
       });
     } catch (error) {
       res.status(500).json({ message: "Error creating profile", error });
@@ -38,7 +39,7 @@ const updateProfile: RequestHandler = async (req, res) => {
   const { first_name, last_name, role, email, userId } = req.body;
   
   try {
-    const profile = await Profile.findByIdAndUpdate(
+    const profile = await Profile.findOneAndReplace(
       userId,
       {
         $set: {
@@ -46,15 +47,12 @@ const updateProfile: RequestHandler = async (req, res) => {
           last_name,
           email,
           role,
-          ProfileStatus: true // Set ProfileStatus to true
         },
-        $exists: { fields: { ProfileStatus: true } }
       },
-      { new: true }
     );
 
-    if (!profile || !profile.ProfileStatus) {
-      return res.status(400).json({ message: "Profile not found or ProfileStatus is false" });
+    if (!profile) {
+      return res.status(400).json({ message: "Profile not found"});
     }
 
     res.status(200).json({ profile });
@@ -67,7 +65,7 @@ const deleteProfile: RequestHandler = async (req, res) => {
   const { userId } = req.body;
 
   try {
-    const profile = await Profile.findByIdAndDelete(userId);
+    const profile = await Profile.findOneAndDelete(userId);
 
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });

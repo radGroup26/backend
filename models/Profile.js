@@ -1,5 +1,5 @@
-import mongoose, { Schema, model } from 'mongoose';
-const ProfileSchema = new Schema({
+import mongoose from 'mongoose';
+const ProfileSchema = new mongoose.Schema({
     first_name: {
         type: String,
         required: true,
@@ -20,9 +20,5 @@ const ProfileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    ProfileStatus: {
-        type: Boolean,
-        default: false
-    }
 });
-export default model('Profile', ProfileSchema);
+export default mongoose.model('Profile', ProfileSchema);
