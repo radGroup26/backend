@@ -6,6 +6,7 @@ interface IProfile extends Document {
     role: string
     email: string
     userId: mongoose.Schema.Types.ObjectId
+    ProfileStatus: boolean
 }
 
 const ProfileSchema = new Schema({
@@ -29,6 +30,10 @@ const ProfileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    ProfileStatus : {
+        type : Boolean,
+        default : false
+    }
 })
 
 

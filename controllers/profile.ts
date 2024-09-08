@@ -27,7 +27,7 @@ const createNewProfile: RequestHandler = async (req, res) => {
       });
 
       res.json({
-        profile,
+        profile,ProfileStatus : true
       });
     } catch (error) {
       res.status(500).json({ message: "Error creating profile", error });
@@ -36,17 +36,25 @@ const createNewProfile: RequestHandler = async (req, res) => {
 
 const updateProfile: RequestHandler = async (req, res) => {
   const { first_name, last_name, role, email, userId } = req.body;
-  try {
-    const profile = await Profile.findByIdAndUpdate(userId, {
-      first_name,
-      last_name,
-      email,
-      role,
-    });
   
+  try {
+    const profile = await Profile.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          first_name,
+          last_name,
+          email,
+          role,
+          ProfileStatus: true // Set ProfileStatus to true
+        },
+        $exists: { fields: { ProfileStatus: true } }
+      },
+      { new: true }
+    );
 
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
+    if (!profile || !profile.ProfileStatus) {
+      return res.status(400).json({ message: "Profile not found or ProfileStatus is false" });
     }
 
     res.status(200).json({ profile });

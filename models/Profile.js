@@ -20,5 +20,9 @@ const ProfileSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    ProfileStatus: {
+        type: Boolean,
+        default: false
+    }
 });
 export default model('Profile', ProfileSchema);
