@@ -8,8 +8,11 @@ import {
 const router = express.Router();
 
 router.get("/", getAllNotifications);
+
 router.post("/add", addNotification);
+
 router.put("/save/:id", updateNotification);
+
 router.delete("/delete/:id", deleteNotification);
 
 export default router;

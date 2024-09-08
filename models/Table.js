@@ -6,12 +6,16 @@ const tableSchema = new mongoose.Schema({
             return new mongoose.Types.ObjectId();
         }
     },
+    no: {
+        type: Number,
+        required: true,
+    },
     restaurantId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Restaurant',
         required: true,
     },
-    tableSeats: {
+    seats: {
         type: Number,
         required: true,
     },
