@@ -1,6 +1,7 @@
 import Profile from "../models/Profile.js";
 const getProfile = async (req, res) => {
     const { userId } = req.params;
+    console.log("calling....");
     try {
         const profile = await Profile.findOne({ userId: userId });
         if (!profile) {
@@ -46,9 +47,9 @@ const updateProfile = async (req, res) => {
     }
 };
 const deleteProfile = async (req, res) => {
-    const { userId } = req.body;
+    const { userId } = req.params;
     try {
-        const profile = await Profile.deleteOne(userId);
+        const profile = await Profile.findOneAndDelete({ userId: userId });
         if (!profile) {
             return res.status(404).json({ message: "Profile not found" });
         }

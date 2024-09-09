@@ -4,6 +4,8 @@ import { RequestHandler } from "express";
 
 const getProfile: RequestHandler = async (req, res) => {
   const { userId } = req.params;
+  console.log("calling....");
+  
   try {
     const profile = await Profile.findOne({ userId: userId });
     if (!profile) {
@@ -56,11 +58,9 @@ const updateProfile: RequestHandler = async (req, res) => {
 };
 
 const deleteProfile: RequestHandler = async (req, res) => {
-  const { userId } = req.body;
-
+  const { userId } = req.params;  
   try {
-    const profile = await Profile.deleteOne(userId);
-
+    const profile = await Profile.findOneAndDelete({userId: userId});
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
