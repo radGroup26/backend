@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/:userId', getProfile);
 router.post('/create', createNewProfile);
-router.post('/update/:userId', updateProfile);
+router.post('/update', updateProfile);
 router.delete('/delete/:userId', deleteProfile);
 
 export default router;
